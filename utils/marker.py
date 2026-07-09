@@ -1,7 +1,6 @@
 import cv2
 import json
 
-# Список для хранения точек
 points = []
 spots = []
 
@@ -12,7 +11,6 @@ def click_event(event, x, y, flags, param):
         points.append((x, y))
         print(f"Точка добавлена: ({x}, {y})")
         
-        # Рисуем точку
         cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
         cv2.imshow('Разметка парковочных мест', img)
     
@@ -25,10 +23,9 @@ def click_event(event, x, y, flags, param):
             print(f"Место {len(spots)} сохранено!")
             points = []
 
-# Загружаем изображение
 img = cv2.imread('data/test_image.jpg')
 if img is None:
-    print("❌ Ошибка: не удалось загрузить data/test_image.jpg")
+    print("Ошибка: не удалось загрузить data/test_image.jpg")
     exit()
 cv2.imshow('Разметка парковочных мест', img)
 cv2.setMouseCallback('Разметка парковочных мест', click_event)
@@ -45,7 +42,6 @@ while True:
 
 cv2.destroyAllWindows()
 
-# Сохраняем разметку
 with open('config/parking_spots.json', 'w', encoding='utf-8') as f:
     json.dump({"spots": spots}, f, indent=2, ensure_ascii=False)
 
