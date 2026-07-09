@@ -22,21 +22,21 @@ class VideoAnalyzer:
         self.spots = self.config['spots']
         self.total_spots = len(self.spots)
         
-        print("🚀 Загрузка модели YOLO11m...")
+        print("Загрузка модели YOLO11m...")
         self.model = YOLO(model_name)
-        print("✅ Модель загружена")
+        print("Модель загружена")
         
         self.cap = None
         self.connect_video()
     
     def connect_video(self):
-        print(f"🎬 Открытие видео: {self.video_path}")
+        print(f"Открытие видео: {self.video_path}")
         self.cap = cv2.VideoCapture(self.video_path)
         
         if not self.cap.isOpened():
             raise ValueError(f"Не удалось открыть видео: {self.video_path}")
         
-        print("✅ Видео открыто")
+        print("Видео открыто")
     
     def get_frame(self):
         if self.cap is None or not self.cap.isOpened():
@@ -45,8 +45,7 @@ class VideoAnalyzer:
         ret, frame = self.cap.read()
         
         if not ret:
-            # Видео закончилось — перематываем на начало
-            print("🔄 Видео закончилось, перемотка...")
+            print("Видео закончилось, перемотка...")
             self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             ret, frame = self.cap.read()
             
@@ -67,7 +66,6 @@ class VideoAnalyzer:
                     confidence = float(box.conf[0])
                     class_id = int(box.cls[0])
                     
-                    # COCO: 2 - car, 3 - motorcycle, 5 - bus, 7 - truck
                     if class_id in [2, 3, 5, 7] and confidence > 0.5:
                         cars.append({
                             'x1': int(x1),
@@ -82,7 +80,7 @@ class VideoAnalyzer:
     
     def analyze_frame(self, frame):
         cars = self.detect_cars(frame)
-        print(f"🚗 Найдено транспорта: {len(cars)}")
+        print(f"Найдено транспорта: {len(cars)}")
         
         results = []
         for spot in self.spots:
@@ -140,7 +138,7 @@ class VideoAnalyzer:
     
     def run(self):
         print("\n" + "=" * 60)
-        print("🚗 ЗАПУСК АНАЛИЗА ВИДЕОФАЙЛА (YOLO11m)")
+        print("ЗАПУСК АНАЛИЗА ВИДЕОФАЙЛА (YOLO11m)")
         print("=" * 60)
         print(f"Видео: {self.video_path}")
         print(f"Интервал: {self.interval} сек")
@@ -155,7 +153,7 @@ class VideoAnalyzer:
                 frame = self.get_frame()
                 results = self.analyze_frame(frame)
                 
-                print(f"\n📊 {time.strftime('%H:%M:%S')} - Свободно: {results['free_spots']}/{results['total_spots']}")
+                print(f"\n{time.strftime('%H:%M:%S')} - Свободно: {results['free_spots']}/{results['total_spots']}")
                 
                 vis_frame = self.visualize(frame, results)
                 cv2.imshow('Parking Analyzer (YOLO11m)', vis_frame)
@@ -165,13 +163,13 @@ class VideoAnalyzer:
                 time.sleep(sleep_time)
                 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
-                    print("\n👋 Завершение работы...")
+                    print("\nЗавершение работы...")
                     break
                 
         except KeyboardInterrupt:
-            print("\n👋 Прервано пользователем")
+            print("\nПрервано пользователем")
         except Exception as e:
-            print(f"❌ Ошибка: {e}")
+            print(f"Ошибка: {e}")
         finally:
             self.cleanup()
     
@@ -179,7 +177,7 @@ class VideoAnalyzer:
         if self.cap is not None:
             self.cap.release()
         cv2.destroyAllWindows()
-        print("✅ Ресурсы освобождены")
+        print("Ресурсы освобождены")
 
 
 def main():
